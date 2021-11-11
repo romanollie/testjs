@@ -1,5 +1,5 @@
 import { getItemsRequest, toggleFavoriteRequest } from './requests';
-import { hideLoader, showLoader } from './loader';
+import { hideLoader, showLoader } from './toggleLoader';
 import { hideError, showError } from './toggleError';
 
 export default () => {
