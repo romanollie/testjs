@@ -1,47 +1,47 @@
 import { getItemsRequest, toggleFavoriteRequest } from './requests';
+import App from './app';
+import ToggleError from './toggleError';
+import ToggleLoader from './toggleLoader';
+
+const app = new App();
+const loader = new ToggleLoader();
+const error = new ToggleError();
 
 export default () => {
-    document.querySelector('#error').style.display = 'none';
-    document.querySelector('#loader').style.display = 'block';
+    error.hideError();
+    loader.showLoader();
 
     getItemsRequest()
         .then(({ data }) => {
             if (data.result !== 'ok' || typeof data.html === 'undefined') {
-                const errorElement = document.querySelector('#error');
-
-                errorElement.innerHTML = 'Произошла ошибка, попробуйте ещё раз.';
-                errorElement.style.display = 'block';
+                error.setErrorHtml('Произошла ошибка, попробуйте ещё раз.');
+                error.showError();
             } else {
-                const appElement = document.querySelector('#app');
+                app.setAppHtml(data.html);
+                app.showApp();
 
-                appElement.innerHTML = data.html;
-                appElement.style.display = 'block';
+                app.addEventListenersToButtons((e) => {
+                    e.preventDefault();
 
-                Array.from(appElement.querySelector('button')).forEach((button) => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
+                    e.currentTarget.textContent = 'Загрузка...';
 
-                        e.currentTarget.textContent = 'Загрузка...';
-
-                        toggleFavoriteRequest(e.currentTarget.dataset.id)
-                            .then(({ data: buttonData }) => {
-                                if (buttonData.result === 'set') {
-                                    e.currentTarget.textContent = '🌝';
-                                } else {
-                                    e.currentTarget.textContent = '🌚';
-                                }
-                            });
-                    });
+                    toggleFavoriteRequest(e.currentTarget.dataset.id).then(
+                        ({ data: buttonData }) => {
+                            if (buttonData.result === 'set') {
+                                e.currentTarget.textContent = '🌝';
+                            } else {
+                                e.currentTarget.textContent = '🌚';
+                            }
+                        },
+                    );
                 });
             }
         })
         .catch((e) => {
-            const errorElement = document.querySelector('#error');
-
-            errorElement.innerHTML = e.message;
-            errorElement.style.display = 'block';
+            error.setErrorHtml(e.message);
+            error.showError();
         })
         .finally(() => {
-            document.querySelector('#loader').style.display = 'none';
+            loader.hideLoader();
         });
 };
