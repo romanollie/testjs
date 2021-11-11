@@ -1,10 +1,22 @@
-export const hideError = () => {
-    document.querySelector('#error').style.display = 'none';
-};
+class ToggleError {
+    constructor() {
+        this.element = document.createElement('div');
+        this.element.setAttribute('id', 'error');
+        this.element.style.display = 'none';
+        document.querySelector('#app').append(this.element);
+    }
 
-export const showError = () => {
-    const errorElement = document.querySelector('#error');
+    showError() {
+        this.element.style.display = 'block';
+    }
 
-    errorElement.innerHTML = 'Произошла ошибка, попробуйте ещё раз.';
-    errorElement.style.display = 'block';
-};
+    hideError() {
+        this.element.style.display = 'none';
+    }
+
+    setErrorHtml(text) {
+        this.element.innerHTML = text;
+    }
+}
+
+export default ToggleError;

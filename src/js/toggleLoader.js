@@ -1,7 +1,19 @@
-export const hideLoader = () => {
-    document.querySelector('#loader').style.display = 'none';
-};
+class ToggleLoader {
+    constructor() {
+        this.element = document.createElement('div');
+        this.element.setAttribute('id', 'loader');
+        this.element.innerHTML = 'Loading...';
+        this.element.style.display = 'none';
+        document.querySelector('#app').append(this.element);
+    }
 
-export const showLoader = () => {
-    document.querySelector('#loader').style.display = 'block';
-};
+    showLoader() {
+        this.element.style.display = 'block';
+    }
+
+    hideLoader() {
+        this.element.style.display = 'none';
+    }
+}
+
+export default ToggleLoader;
