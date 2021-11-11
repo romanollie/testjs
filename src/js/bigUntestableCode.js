@@ -1,16 +1,15 @@
 import { getItemsRequest, toggleFavoriteRequest } from './requests';
+import { hideLoader, showLoader } from './loader';
+import { hideError, showError } from './toggleError';
 
 export default () => {
-    document.querySelector('#error').style.display = 'none';
-    document.querySelector('#loader').style.display = 'block';
+    hideError();
+    showLoader();
 
     getItemsRequest()
         .then(({ data }) => {
             if (data.result !== 'ok' || typeof data.html === 'undefined') {
-                const errorElement = document.querySelector('#error');
-
-                errorElement.innerHTML = 'Произошла ошибка, попробуйте ещё раз.';
-                errorElement.style.display = 'block';
+                showError();
             } else {
                 const appElement = document.querySelector('#app');
 
@@ -42,6 +41,6 @@ export default () => {
             errorElement.style.display = 'block';
         })
         .finally(() => {
-            document.querySelector('#loader').style.display = 'none';
+            hideLoader();
         });
 };
